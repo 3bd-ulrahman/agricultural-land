@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -14,24 +14,24 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        if (!Auth::attempt($request->only(['email', 'password']))) {
+        if (!Auth::guard('admin')->attempt($request->only(['email', 'password']))) {
             return response()->json([
                 'data' => '',
                 'message' => 'credentials do not match'
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        $user = auth()->user();
+        $admin = auth('admin')->user();
 
         return response()->json([
-            'user' => $user,
-            'token' => $user->createToken($user->email)->plainTextToken
+            'user' => $admin,
+            'token' => $admin->createToken($admin->email)->plainTextToken
         ], Response::HTTP_OK);
     }
 
     public function logout()
     {
-        Auth::user()->currentAccessToken()->delete();
+        Auth::guard('admin')->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'You have succesfully been logged out'

@@ -20,6 +20,8 @@ Route::apiResource('plants', App\Http\Controllers\Api\PlantController::class)->e
 
 Route::prefix('dashboard')->group(function () {
     Route::resource('users', App\Http\Controllers\Api\Dashboard\UserController::class);
-    Route::resource('users.plants', App\Http\Controllers\Api\Dashboard\User\PlantController::class)
-        ->only(['index']);
+    Route::resource('users.plants', App\Http\Controllers\Api\Dashboard\User\PlantController::class)->only(['index']);
+
+    Route::post('register', [App\Http\Controllers\Api\Dashboard\AuthController::class, 'register']);
+    Route::post('login', [App\Http\Controllers\Api\Dashboard\AuthController::class, 'login']);
 });

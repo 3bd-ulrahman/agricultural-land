@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\PlantRequest;
 use App\Models\Plant;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class PlantController extends Controller
@@ -27,7 +27,9 @@ class PlantController extends Controller
      */
     public function store(PlantRequest $request)
     {
-        Plant::query()->create($request->validated());
+        $image = Storage::disk(STORAGE_DISK)->put('images/plants', $request->file('image'));
+
+        Plant::query()->create(['image' => $image] + $request->validated());
 
         return response()->json([
             'message' => 'Plant created successfully'
@@ -49,6 +51,8 @@ class PlantController extends Controller
      */
     public function destroy(Plant $plant)
     {
+        Storage::disk(STORAGE_DISK)->delete($plant->image);
+
         $plant->delete();
 
         return response()->json([], Response::HTTP_NO_CONTENT);

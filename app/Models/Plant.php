@@ -23,4 +23,15 @@ class Plant extends Model
         'humidity',
         'soil_Humidity'
     ];
+
+    // Relationships
+    public function plants()
+    {
+        return $this->hasMany(Plant::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
